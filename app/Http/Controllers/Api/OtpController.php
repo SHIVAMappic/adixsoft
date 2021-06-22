@@ -81,5 +81,43 @@ class OtpController extends Controller
     	}      
         
 	}
+
+	public function resendOtp(Request $request){
+		try{
+			if(!empty($request->email)){
+		        $user = User::where('email',$request->email)->first();
+		        if(!empty($user)){
+		        	$token =rand(10,100000);
+		        	$user->otp_verified_token = $token;
+		        	$user = User::where('email',$request->email)->update(['otp_verified_token'=>$token]);		        	
+		        	return response()->json(array(
+		                "status" => true,
+		                "message" =>"Check Otp",
+		                "otp"=>$token
+		            ), 200);
+		        }else{
+		        	return response()->json(array(
+		                "status" => false,
+		                "errors" =>"User not exists"
+		            ), 400);
+		        }		           
+
+			}else{
+				return response()->json(array(
+	                "status" => false,
+	                "errors" =>"User not exists"
+	            ), 400);
+			}
+
+		} catch(Exception $e){
+    		return response()->json(array(
+                "status" => 400,
+                "errors" => $e->getMessage(),
+                "message"=>$e->getMessage(),
+            ), 400);
+
+    	}      
+
+	}
     
 }

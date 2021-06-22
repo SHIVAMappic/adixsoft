@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::post('/user-email-verify', [App\Http\Controllers\Api\OtpController::class, 'userEmailVerify'])->name('user-email-verify');
 Route::post('/user-otp-verify', [App\Http\Controllers\Api\OtpController::class, 'userOtpVerify'])->name('user-otp-verify');
+Route::post('/resend-otp', [App\Http\Controllers\Api\OtpController::class, 'resendOtp'])->name('resend-otp');

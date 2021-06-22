@@ -32,6 +32,7 @@
                         <input type="text" class="form-control" name="otp"  id="exampleInputEmail122" required   placeholder="Enter OTP">    
                       </div>                     
                       <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="button" class="btn btn-success"  id="resend-otp-btn">Resend OTP</button>
                     </form>
                 </div>
             </div>
@@ -41,6 +42,8 @@
 <script>
     $(document).ready(function () {
         $('#otp-form').hide();
+
+        // Email Verify 
         $('#check-email').on('submit',function(e){
             e.preventDefault();
             $.ajax({
@@ -56,18 +59,18 @@
                     var email = $('#email').val();
                     $('#user-email').val(email);
                     $('#check-email').hide();  
-                    $('#otp-form').show();                 
-                  
+                    $('#otp-form').show();                  
                 },
                 error: function (data) { 
                     var r = jQuery.parseJSON(data.responseText);                 
                     $('#err-msg').html('<div class="alert alert-danger" role="alert">'+r.errors+'</div>');
-                    setTimeout(function(){ $('#err-msg').html(''); }, 3000);
-                    //alert('err');                    
+                    setTimeout(function(){ $('#err-msg').html(''); }, 3000);                                      
                 }
             });
         });
 
+
+        // Verify OTP
         $('#otp-form').on('submit',function(e){
             e.preventDefault();
             var email = $('#user-email').val();
@@ -84,19 +87,39 @@
                 success: function (data) {                 
                     $('#check-email').hide();  
                     $('#otp-form').show();     
-                    window.location.href = "{{route('thank-you')}}";         
-                  
+                    window.location.href = "{{route('thank-you')}}";                   
                 },
                 error: function (data) { 
                     var r = jQuery.parseJSON(data.responseText);                 
                     $('#err-msg').html('<div class="alert alert-danger" role="alert">'+r.errors+'</div>');
-                    setTimeout(function(){ $('#err-msg').html(''); }, 3000);
-                    //alert('err');                    
+                    setTimeout(function(){ $('#err-msg').html(''); }, 3000);                                      
                 }
             });
 
         });
 
+
+        // Resend OTP
+
+        $('#resend-otp-btn').on('click',function(){
+            var email = $('#user-email').val();
+            $.ajax({
+                type: "POST",          
+                url: "{{route('resend-otp')}}",
+                data: {email:email},
+                dataType:'json',                        
+                success: function (data) { 
+                    alert(data.otp);
+                    var email = $('#email').val();
+                    $('#user-email').val(email);                 
+                },
+                error: function (data) { 
+                    var r = jQuery.parseJSON(data.responseText);                 
+                    $('#err-msg').html('<div class="alert alert-danger" role="alert">'+r.errors+'</div>');
+                    setTimeout(function(){ $('#err-msg').html(''); }, 3000);                                   
+                }
+            });
+        })
 
 
 
